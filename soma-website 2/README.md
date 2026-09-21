@@ -42,7 +42,7 @@ Open http://localhost:8000. Use an HTTP server because the animation uses a Java
 
 ## Existing interactions and assets
 
-The opening title animation and particle sphere are preserved. Move the pointer over the sphere or drag to rotate; use the bottom-right button to pause or resume. Reduced-motion preferences are respected, and the title adapts for mobile screens.
+The opening title animation and particle sphere are preserved. Move the pointer over the sphere or drag to rotate; the footer controls have been removed. Reduced-motion preferences are respected, and the title adapts for mobile screens.
 
 The supplied fonts and logo are retained. This package does not grant additional rights to those assets.
 

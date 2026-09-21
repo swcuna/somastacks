@@ -1,4 +1,4 @@
-const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d'),motion=document.querySelector('#motion'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let w=0,h=0,r=0,time=0,last=0,frame=0,paused=reduced.matches,rotation=0,spin=0,disturbance=0;
 let entranceStart=Infinity;
 const pointer={x:-9999,y:-9999,active:false,down:false,previousX:0};
@@ -46,11 +46,10 @@ function render(dt){
 function tick(now){frame=0;if(paused||document.hidden)return;const dt=Math.min((now-last)/1000,.032);last=now;time+=dt;render(dt);frame=requestAnimationFrame(tick);}
 function start(){if(!frame&&!paused&&!document.hidden){last=performance.now();frame=requestAnimationFrame(tick);}}
 function release(){pointer.down=false;pointer.active=false;canvas.classList.remove('dragging');}
-function ui(){motion.setAttribute('aria-label',paused?'Resume motion':'Pause motion');motion.setAttribute('aria-pressed',String(paused));motion.querySelector('path').setAttribute('d',paused?'M7 5l7 5-7 5Z':'M7 5v10M13 5v10');}
 canvas.addEventListener('pointermove',e=>{if(pointer.down){spin=Math.max(-2,Math.min(2,(e.clientX-pointer.previousX)*.12));rotation+=(e.clientX-pointer.previousX)*.003;}pointer.previousX=e.clientX;pointer.x=e.clientX;pointer.y=e.clientY;pointer.active=true;},{passive:true});
 canvas.addEventListener('pointerdown',e=>{if(paused)return;pointer.down=true;pointer.active=true;pointer.x=pointer.previousX=e.clientX;pointer.y=e.clientY;canvas.setPointerCapture(e.pointerId);canvas.classList.add('dragging');},{passive:true});
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('lostpointercapture',release);canvas.addEventListener('pointerleave',()=>{if(!pointer.down)release();});window.addEventListener('blur',release);
-motion.addEventListener('click',()=>{paused=!paused;release();cancelAnimationFrame(frame);frame=0;ui();start();});reduced.addEventListener('change',()=>{paused=reduced.matches;release();cancelAnimationFrame(frame);frame=0;ui();start();});document.addEventListener('visibilitychange',()=>{release();cancelAnimationFrame(frame);frame=0;start();});window.addEventListener('resize',resize,{passive:true});resize();ui();
+reduced.addEventListener('change',()=>{paused=reduced.matches;release();cancelAnimationFrame(frame);frame=0;render(0);start();});document.addEventListener('visibilitychange',()=>{release();cancelAnimationFrame(frame);frame=0;start();});window.addEventListener('resize',resize,{passive:true});resize();
 document.fonts.ready.then(()=>{entranceStart=performance.now();introLayout();document.body.classList.add('intro-ready');start();});
 
 function introLayout(){
